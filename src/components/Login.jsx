@@ -1,6 +1,6 @@
-import { useState } from "react";
-import adminIcon from "../assets/admin.png";
-import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState } from 'react';
+import adminIcon from '../assets/admin.png';
+import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Login({ onLogin, isWrongCredentials }) {
   const [showPassword, setShowPassword] = useState(false);
