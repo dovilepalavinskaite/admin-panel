@@ -1,19 +1,32 @@
 import { createContext, useState } from 'react';
 
-export const EmpoyeesContext = createContext({
-    employeesListlist: []
-})
+export const EmployeesContext = createContext({
+  employeesList: [],
+  addEmployeeToList: () => {}
+});
 
-export default function EmpoyeeContextProvider({ children }) {
-    const [employeesList, setEmployeesList] = useState({
-        employeesListlist: []
-    })
+export default function EmployeesContextProvider({ children }) {
+  const [employeesList, setEmployeesList] = useState([]);
 
-    const ctxValue = {
-        employeesListlist: employeesList.list
+
+ function addEmployeeToList(employeeData) {
+    setEmployeesList(prevList => [
+        ...prevList,
+        { 
+        id: Date.now(),
+        ...employeeData
+        }
+    ]);
     }
 
-    return <EmpoyeesContext.Provider value={ctxValue}>
-        { children }
-    </EmpoyeesContext.Provider>
+  const ctxValue = {
+    employeesList,
+    addEmployeeToList
+  };
+
+  return (
+    <EmployeesContext.Provider value={ctxValue}>
+      {children}
+    </EmployeesContext.Provider>
+  );
 }

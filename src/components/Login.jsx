@@ -7,7 +7,7 @@ export default function Login({ onLogin, isWrongCredentials }) {
   const [isPasswordForgotten, setPasswordForgotten] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [shakeError, setShakeError] = useState(false); // <-- new state
+  const [shakeError, setShakeError] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
