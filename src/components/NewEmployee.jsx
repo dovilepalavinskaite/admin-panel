@@ -1,16 +1,18 @@
 import { useState, useContext } from 'react';
 import { EmployeesContext } from '../store/employees-context';
 import { IoIosPersonAdd } from 'react-icons/io';
-import FormField from './FormField';
+import FormField from './ui/FormField';
 import SuccessMessage from './SuccessMessage';
 
-export default function NewEmployee() {
+export default function NewEmployee({ onCancel }) {
     const [employeeData, setEmployeeData] = useState({
         name: '',
         lastName: '',
         position: '',
         email: '',
-        phone: ''
+        phone: '',
+        department: '',
+        employment: '' 
     });
     const { addEmployeeToList } = useContext(EmployeesContext);
     const [successMessage, setSuccessMessage] = useState(false)
@@ -21,18 +23,21 @@ export default function NewEmployee() {
     }
 
     function handleSubmit(e) {
-        e.preventDefault();
-        addEmployeeToList(employeeData);
-        setEmployeeData({ name: '', lastName: '', position: '', email: '', phone: '' });
-        setSuccessMessage(true);
-        setTimeout(() => setSuccessMessage(false), 3000);
-    }
+    e.preventDefault();
+    addEmployeeToList(employeeData);
 
-    function handleCancelAddEmployee(e) {
-        e.preventDefault();
-        setEmployeeData({ name: '', lastName: '', position: '', email: '', phone: '' });
-    }
+    setEmployeeData({ 
+        name: '', 
+        lastName: '', 
+        position: '', 
+        email: '', 
+        phone: '',
+        department: ''
+    });
 
+    setSuccessMessage(true);
+    setTimeout(() => setSuccessMessage(false), 3000);
+}
     return (
         <div className="min-h-screen px-4 ml-7 mt-32">
             <div className="flex items-center gap-3 mb-10">
@@ -67,6 +72,7 @@ export default function NewEmployee() {
                 <FormField 
                     label="Email" 
                     name="email" 
+                    type="email"
                     value={employeeData.email} 
                     onChange={handleChange} 
                 />
@@ -75,6 +81,23 @@ export default function NewEmployee() {
                     name="phone" 
                     value={employeeData.phone} 
                     onChange={handleChange} 
+                />
+                <FormField 
+                    label="Department"
+                    name="department"
+                    type="select"
+                    value={employeeData.department}
+                    onChange={handleChange}
+                    options={["Administration","Marketing","Engineering","Finance","Design","Product"]}
+                />
+
+                <FormField 
+                    label="Employment type"
+                    name="employment"
+                    type="select"
+                    value={employeeData.employment}
+                    onChange={handleChange}
+                    options={["Full-time","Part-time","Freelancing"]}
                 />
                 <div className="flex flex-col sm:flex-row gap-4 mt-16 w-full">
                     <button
@@ -85,7 +108,7 @@ export default function NewEmployee() {
                     </button>
                     <button
                         type="button"
-                        onClick={handleCancelAddEmployee}
+                        onClick={onCancel}
                         className="flex-1 rounded-full px-3 py-2 border-2 border-sky-800 text-stone-50 hover:bg-sky-900 hover:shadow-md transition duration-200 cursor-pointer"
                     >
                         Cancel

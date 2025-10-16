@@ -1,6 +1,6 @@
 import emptyListImg from '../assets/no-task.png'
 
-export default function NoEmployeesTemplate({ onAddNewEmployee }) {
+export default function NoEmployees({ onAddNewEmployee }) {
     return (
         <div className="flex flex-col justify-center items-center min-h-screen px-4">
             <img 
