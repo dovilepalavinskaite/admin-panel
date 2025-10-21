@@ -7,37 +7,40 @@ import { IoIosPersonAdd } from 'react-icons/io';
 import { MdDeleteOutline } from 'react-icons/md';
 
 export default function EditEmployee({ employeeId, onCancel }) {
-  const { employeesList, updateEmployee } = useContext(EmployeesContext);
+  const { employeesList, updateEmployee, deleteEmployee } = useContext(EmployeesContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const modal = useRef()
+  const modal = useRef();
   const employee = employeesList.find(emp => emp.id === employeeId);
 
   const [employeeData, setEmployeeData] = useState(employee || {});
   const [successMessage, setSuccessMessage] = useState(false);
 
   const handleOpenDeletingModal = () => {
-  setModalVisible(true);
-  setTimeout(() => modal.current.open(), 0);
-};
+    setModalVisible(true);
+    setTimeout(() => modal.current.open(), 0);
+  };
 
-const handleCloseModal = () => {
-  modal.current.close();
-  setModalVisible(false);
-};
+  const handleCloseModal = () => {
+    modal.current.close();
+    setModalVisible(false);
+  };
 
-const modalActions = (
-  <>
-    <button type="button" className="close-btn" onClick={handleCloseModal}>
-      Cancel
-    </button>
-    <button type="button" className="delete-btn" onClick={() => {
-      // do delete logic here
-      handleCloseModal();
-    }}>
-      Delete
-    </button>
-  </>
-);
+  const handleDelete = () => {
+    deleteEmployee(employeeId);
+    handleCloseModal();
+    onCancel();
+  };
+
+  const modalActions = (
+    <>
+      <button type="button" className="close-btn" onClick={handleCloseModal}>
+        Cancel
+      </button>
+      <button type="button" className="delete-btn" onClick={handleDelete}>
+        Delete
+      </button>
+    </>
+  );
 
   useEffect(() => {
     if (employee) setEmployeeData(employee);
@@ -76,13 +79,39 @@ const modalActions = (
           onSubmit={handleSubmit}
           className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-10 max-w-2xl"
         >
-          <FormField label="First name" name="name" value={employeeData.name} onChange={handleChange} />
-          <FormField label="Last name" name="lastName" value={employeeData.lastName} onChange={handleChange} />
+          <FormField 
+            label="First name" 
+            name="name" 
+            value={employeeData.name} 
+            onChange={handleChange} 
+          />
+          <FormField 
+            label="Last name" 
+            name="lastName" 
+            value={employeeData.lastName} 
+            onChange={handleChange} 
+          />
           <div className="sm:col-span-2 my-4">
-            <FormField label="Job position" name="position" value={employeeData.position} onChange={handleChange} />
+            <FormField 
+              label="Job position" 
+              name="position" 
+              value={employeeData.position} 
+              onChange={handleChange} 
+            />
           </div>
-          <FormField label="Email" name="email" type="email" value={employeeData.email} onChange={handleChange} />
-          <FormField label="Phone number" name="phone" value={employeeData.phone} onChange={handleChange} />
+          <FormField 
+            label="Email" 
+            name="email" 
+            type="email" 
+            value={employeeData.email} 
+            onChange={handleChange} 
+          />
+          <FormField 
+            label="Phone number" 
+            name="phone" 
+            value={employeeData.phone} 
+            onChange={handleChange} 
+          />
           <FormField
             label="Department"
             name="department"
@@ -127,5 +156,5 @@ const modalActions = (
         {successMessage && <SuccessMessage message="Employee successfully updated!" />}
       </div>
     </>
-  )
+  );
 }

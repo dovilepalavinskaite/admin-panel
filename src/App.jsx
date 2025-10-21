@@ -1,30 +1,36 @@
-import { useState, useEffect, useContext } from 'react';
-import './App.css';
-import Login from './components/Login.jsx';
-import Sidebar from './components/ui/Sidebar.jsx';
-import NoEmployees from './components/NoEmployees.jsx';
-import EmployeesContextProvider, { EmployeesContext } from './store/employees-context.jsx';
-import NewEmployee from './components/NewEmployee.jsx';
-import AllEmployees from './components/AllEmployees.jsx';
-import SelectedEmployee from './components/SelectedEmployee.jsx';
+import { useState, useEffect, useContext } from "react";
+import "./App.css";
+import Login from "./components/Login.jsx";
+import Sidebar from "./components/ui/Sidebar.jsx";
+import NoEmployees from "./components/NoEmployees.jsx";
+import EmployeesContextProvider, { EmployeesContext } from "./store/employees-context.jsx";
+import NewEmployee from "./components/NewEmployee.jsx";
+import AllEmployees from "./components/AllEmployees.jsx";
+import SelectedEmployee from "./components/SelectedEmployee.jsx";
 
 function AppContent() {
-  const [isUserLoggedIn, setLogin] = useState(true);
+  const [isUserLoggedIn, setLogin] = useState(false);
   const [isWrongCredentials, setWrongCredentials] = useState(false);
   const { employeesList } = useContext(EmployeesContext);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-
   const [currentView, setCurrentView] = useState(null);
 
-  // Initialize currentView based on employees list
+  // Initialize currentView
   useEffect(() => {
     if (!currentView) {
-      setCurrentView(employeesList.length === 0 ? 'noEmployees' : 'allEmployees');
+      setCurrentView(employeesList.length === 0 ? "noEmployees" : "allEmployees");
+    }
+  }, [employeesList, currentView]);
+
+  // Auto-switch to noEmployees if list is empty while viewing allEmployees
+  useEffect(() => {
+    if (currentView === "allEmployees" && employeesList.length === 0) {
+      setCurrentView("noEmployees");
     }
   }, [employeesList, currentView]);
 
   function handleLogin(credentials) {
-    if (credentials.username.trim() === 'admin' && credentials.password.trim() === 'admin') {
+    if (credentials.username.trim() === "admin" && credentials.password.trim() === "admin") {
       setLogin(true);
     } else {
       setWrongCredentials(true);
@@ -39,32 +45,38 @@ function AppContent() {
         </div>
       ) : (
         <>
-          <Sidebar 
-            onAddNewEmployee={() => setCurrentView('newEmployee')}
-            onViewAllEmployees={() => setCurrentView('allEmployees')}
+          {/* Sidebar */}
+          <Sidebar
+            onAddNewEmployee={() => setCurrentView("newEmployee")}
+            onViewAllEmployees={() =>
+              setCurrentView(employeesList.length === 0 ? "noEmployees" : "allEmployees")
+            }
           />
-          <div className="flex-1">
-            {currentView === 'newEmployee' && (
+
+          {/* Main Content */}
+          <div className="flex-1 md:ml-[20%]">
+            {currentView === "newEmployee" && (
               <NewEmployee
-                onCancel={() => setCurrentView(employeesList.length === 0 ? 'noEmployees' : 'allEmployees')}
+                onCancel={() =>
+                  setCurrentView(employeesList.length === 0 ? "noEmployees" : "allEmployees")
+                }
               />
             )}
-            {currentView === 'noEmployees' && (
-              <NoEmployees onAddNewEmployee={() => setCurrentView('newEmployee')} />
+            {currentView === "noEmployees" && (
+              <NoEmployees onAddNewEmployee={() => setCurrentView("newEmployee")} />
             )}
-            {currentView === 'allEmployees' && (
-            <AllEmployees 
-              onViewEmployee={(id) => {
-                setSelectedEmployeeId(id);
-                setCurrentView('selectedEmployee');
-              }} 
-            />
+            {currentView === "allEmployees" && employeesList.length > 0 && (
+              <AllEmployees
+                onViewEmployee={(id) => {
+                  setSelectedEmployeeId(id);
+                  setCurrentView("selectedEmployee");
+                }}
+              />
             )}
-
-            {currentView === 'selectedEmployee' && (
-              <SelectedEmployee 
-                employeeId={selectedEmployeeId} 
-                onCancelEdit={() => setCurrentView('allEmployees')} 
+            {currentView === "selectedEmployee" && (
+              <SelectedEmployee
+                employeeId={selectedEmployeeId}
+                onCancelEdit={() => setCurrentView("allEmployees")}
               />
             )}
           </div>
